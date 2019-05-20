@@ -16,6 +16,6 @@ node('master') {
   }
   stage('SonarQube Analysis') {
 
-  sh "/var/jenkins_home/tools/sonar-scanner-3.3.0.1492-linux/bin/sonar-scanner -Dsonar.host.url=http://mysonar:9000 -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=./src -Dsonar.projectBaseDir=/var/jenkins_home/workspace/"
+  sh "/var/jenkins_home/tools/sonar-scanner-3.3.0.1492-linux/bin/sonar-scanner -Dsonar.host.url=http://mysonar:9000 -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=src -Dsonar.projectBaseDir=/var/jenkins_home/workspace/"
     }
   }
