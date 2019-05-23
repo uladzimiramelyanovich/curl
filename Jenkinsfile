@@ -13,7 +13,6 @@ node('agent') {
       sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/home/jenkins/workspace/"
     }
   }
-}	
   stage("Quality Gate"){
     withSonarQubeEnv('sonarqube') {
       timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
@@ -24,5 +23,5 @@ node('agent') {
       }
 	}  
   }	
-	
+}	
   
