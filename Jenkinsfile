@@ -8,7 +8,7 @@ node('agent') {
     sh "make"
   }
   stage('Unit Tests') {
-    println 'Testing units'
+    sh "make test"
   }
   stage('SonarQube analysis') {
     // requires SonarQube Scanner 2.8+
@@ -16,7 +16,7 @@ node('agent') {
     withSonarQubeEnv('sonarqube') {
       sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=./src"	 
       println 'Sending data to Sonarqube server.'
-	  sleep(10)	
+	  sleep(30)	
     }
   }
   stage('Quality Gate') {
