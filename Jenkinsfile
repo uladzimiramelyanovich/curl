@@ -10,10 +10,10 @@ node('agent') {
 	def server = Artifactory.server 'autoartifactory'
 	def uploadSpec = """{
         "files": [
-          {
-              "pattern": "./*",
+            {
+              "pattern": "*.txt",
               "target": "curl/files/"
-        }
+            }
         ]
     }"""
 	server.upload spec: uploadSpec, failNoOp: true
