@@ -6,6 +6,17 @@ node('agent') {
     sh "./buildconf"
     sh "./configure"
     sh "make"
+	
+	def server = Artifactory.server 'autoartifactory'
+	def uploadSpec = """{
+        "files": [
+          {
+              "pattern": "./*",
+              "target": "curl/files/"
+        }
+        ]
+    }"""
+	server.upload spec: uploadSpec, failNoOp: true
   }
   stage('Unit Tests') {
     sh "make test"
