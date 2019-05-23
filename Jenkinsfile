@@ -11,7 +11,7 @@ node('agent') {
     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
     withSonarQubeEnv('sonarqube') {
 //      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/home/jenkins/workspace/"
-      sh "${scannerHome}/bin/sonar-scanner"	  
+      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app"	  
     }
   }
   stage("Quality Gate"){
