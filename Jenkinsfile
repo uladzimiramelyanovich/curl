@@ -1,4 +1,4 @@
-node('master') {
+node('agent') {
   stage('SCM') {
     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
   }
@@ -8,8 +8,8 @@ node('master') {
 //    }
   stage('SonarQube analysis') {
     // requires SonarQube Scanner 2.8+
-    def scannerHome = tool 'Autosonar Scanner 3.3.0.1492';
-    withSonarQubeEnv('autosonar') {
+    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+    withSonarQubeEnv('sonarqube') {
       sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/var/jenkins_home/workspace/""
     }
   }
