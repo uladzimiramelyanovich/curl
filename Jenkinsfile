@@ -3,9 +3,9 @@ node('agent') {
     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
   }
   stage('Build') {
-    ./buildconf
-    ./configure
-    make
+    sh "./buildconf"
+    sh "./configure"
+    sh "make"
   }
   stage('Unit Tests') {
     println 'Testing units'
