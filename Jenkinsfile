@@ -12,8 +12,8 @@ node('agent') {
     withSonarQubeEnv('sonarqube') {
 //      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/home/jenkins/workspace/"
       sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app"	 
-	  println 'Sleeping 30s'
-	  sleep(30000)	
+//	  println 'Sleeping 30s'
+	  sleep(30)	
     }
   }
   stage("Quality Gate"){
