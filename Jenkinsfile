@@ -12,7 +12,7 @@ node('agent') {
         "files": [
             {
               "pattern": "*.txt",
-              "target": "curl/files/"
+              "target": "example-repo-local/files/"
             }
         ]
     }"""
