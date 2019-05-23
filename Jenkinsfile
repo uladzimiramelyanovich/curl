@@ -10,7 +10,7 @@ node('agent') {
     // requires SonarQube Scanner 2.8+
     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
     withSonarQubeEnv('sonarqube') {
-      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/var/jenkins_home/workspace/""
+      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.sources=curl/src -Dsonar.projectBaseDir=/home/jenkins/workspace/"
     }
   }
 }	
