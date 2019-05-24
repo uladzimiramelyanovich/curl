@@ -7,7 +7,7 @@ node('agent') {
     sh "./configure"
     sh "make"
 	
-	def server = Artifactory.server 'autoartifactory'
+	def server = Artifactory.server 'artifactory'
 	def uploadSpec = """{
         "files": [
             {
