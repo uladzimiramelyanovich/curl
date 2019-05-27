@@ -4,9 +4,10 @@ node('agent') {
   }
 
   stage('Build and execute Unit Tests') {
-    sh "cd ./tests"
-	sh "./configure"
+    sh "./buildconf"
+    sh "./configure"
 	sh "make"
+	sh "cd ./tests"
     sh "make test"
   }
   stage('SonarQube analysis') {
