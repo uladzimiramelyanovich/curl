@@ -16,9 +16,9 @@ node ('master'){
                         sh "make test"
                     }
                 } finally {
-                    archiveArtifacts artifacts: '**/*.lo', fingerprint: true
-                    archiveArtifacts artifacts: '**/*.o', fingerprint: true
-                    archiveArtifacts artifacts: '**/.libs/*', fingerprint: true
+                    archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
+                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
+                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
                 }
                 stage('SonarQube analysis') {
                     // requires SonarQube Scanner 2.8+
