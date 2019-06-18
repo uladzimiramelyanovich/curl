@@ -5,7 +5,7 @@ node('agent') {
 
     stage('Build and execute Unit Tests') {
         sh "./buildconf"
-        sh "./configure"
+        sh "./configure --enable-debug"
 		sh "make"
 		sh "cd ./tests"
 		sh "make test"
@@ -14,7 +14,7 @@ node('agent') {
 		// requires SonarQube Scanner 2.8+
 		def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
 		withSonarQubeEnv('sonarqube') {
-			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./**/include/*"	 
+			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=**/include/*"	 
 		}
 	}
 	stage('Build') {
