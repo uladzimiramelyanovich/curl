@@ -51,7 +51,7 @@ node{
 //      agentswarm : {
             node ('swarm') {
                 stage ('Install build tools') {
-                    sh apt-get update && apt install -y cmake autoconf
+                    sh "apt-get update && apt install -y cmake autoconf"
                 }    
             }    
 //      }
