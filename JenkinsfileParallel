@@ -1,5 +1,5 @@
 node{
-    parallel {
+    parallel (
         "agent" : {
             node ('agent') {
                 stage('Checkout repository') {
@@ -55,6 +55,6 @@ node{
             }    
         }
        
-    }    
+    )    
 }	
   
