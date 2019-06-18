@@ -1,17 +1,19 @@
+@Library('my-shared-library') _
 node ('master'){
     stage ('Test') {
     parallel (
         'agent': {
-            node ('agent') {
+            node ('centos') {
                 stage('Checkout repository') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
-        
+                stage('Build') {
+                    script {
+                        parallelScript.linux("platform" : "x86")
+                    }
+                }    
                 try {
                     stage('Build and execute Unit Tests') {
-                        sh "./buildconf"
-                        sh "./configure --enable-debug"
-                        sh "make"
                         sh "cd ./tests"
                         sh "make test"
                     }
@@ -26,12 +28,6 @@ node ('master'){
                     withSonarQubeEnv('sonarqube') {
                         sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=**/include/*"	 
                     }
-                }
-                stage('Build') {
-                    sh "./buildconf"
-                    sh "./configure"
-                    sh "make"
-
                 }
                 stage('Quality Gate') {
                     timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
