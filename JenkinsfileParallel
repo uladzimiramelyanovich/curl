@@ -28,7 +28,7 @@ node ('master'){
                     withSonarQubeEnv('sonarqube') {
                         sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
                     }
-                    sleep(10)
+                    sleep(30)
                 }
                 stage('Quality Gate') {
                     timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
