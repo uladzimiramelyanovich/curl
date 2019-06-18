@@ -2,7 +2,7 @@
 node ('master'){
     stage ('Test') {
     parallel (
-        'agent': {
+        'agent-32bit': {
             node ('centos') {
                 stage('Checkout repository') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
@@ -26,7 +26,7 @@ node ('master'){
                     // requires SonarQube Scanner 2.8+
                     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
                     withSonarQubeEnv('sonarqube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-x32:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
                     }
                     sleep(30)
                 }
@@ -52,6 +52,56 @@ node ('master'){
                 } 
             } 
         },
+        'agent-64bit': {
+            node ('centos') {
+                stage('Checkout repository') {
+                    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+                }
+                stage('Build') {
+                    script {
+                        parallelScript.linux("platform" : "x86_64")
+                    }
+                }    
+                try {
+                    stage('Build and execute Unit Tests') {
+                        sh "cd ./tests"
+                        sh "make test"
+                    }
+                } finally {
+                    archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
+                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
+                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
+                }
+                stage('SonarQube analysis') {
+                    // requires SonarQube Scanner 2.8+
+                    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+                    withSonarQubeEnv('sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-x64:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
+                    }
+                    sleep(30)
+                }
+                stage('Quality Gate') {
+                    timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+                stage('Atrifactory') {
+                    def server = Artifactory.server 'artifactory'
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "*.txt",
+                                "target": "example-repo-local/files/"
+                            }
+                        ]
+                    }"""
+                    server.upload spec: uploadSpec, failNoOp: true
+                } 
+            } 
+        },        
         'agentswarm': {
             node ('swarm') {
                 stage ('Install build tools') {
