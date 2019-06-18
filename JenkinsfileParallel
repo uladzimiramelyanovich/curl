@@ -1,6 +1,7 @@
 node{
-    parallel (
-        "agent" : {
+    stage ('Test') {
+    parallel {
+//      agent : {
             node ('agent') {
                 stage('Checkout repository') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
@@ -46,15 +47,16 @@ node{
                     server.upload spec: uploadSpec, failNoOp: true
                 } 
             } 
-        }
-        "agentswarm" : {
+//      }
+//      agentswarm : {
             node ('swarm') {
                 stage ('Install build tools') {
                     sh apt-get update && apt install -y cmake autoconf
                 }    
             }    
-        }
+//      }
        
-    )    
+    }
+    }
 }	
   
