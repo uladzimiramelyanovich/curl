@@ -46,11 +46,6 @@ void set_binmode(FILE *stream)
 #else
   (void)stream;
 #endif
-#my work
-int bar [5] = { 10, 20, 30 };
-bar [6] = 4;
-return bar [8];
-#my work
 }
 
 #endif /* HAVE_SETMODE */
