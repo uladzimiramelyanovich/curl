@@ -103,7 +103,7 @@ node ('master'){
             } 
         },        
         'windows': {
-            node (windows') {
+            node ('windows') {
                 stage('Checkout repository Windows x64') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
