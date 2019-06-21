@@ -102,8 +102,8 @@ node ('master'){
                 } 
             } 
         },        
-        'windows': {
-            node ('windows') {
+        'windows1': {
+            node ('client1') {
                 stage('Checkout repository Windows x64') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
@@ -111,6 +111,24 @@ node ('master'){
                     stage('Build Windows x64') {
                         script {
                             parallelScript.windows("platform" : "x86_64")
+                        }
+                    }
+                } finally {
+                    archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
+                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
+                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
+                }    
+            }    
+        }
+        'windows2': {
+            node ('client2') {
+                stage('Checkout repository Windows x64') {
+                    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+                }
+                try {
+                    stage('Build Windows x64') {
+                        script {
+                            parallelScript.windows("platform" : "x86")
                         }
                     }
                 } finally {
