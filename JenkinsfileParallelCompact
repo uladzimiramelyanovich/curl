@@ -1,5 +1,3 @@
-# @Library('my-shared-library') _
-
 node ('master'){
     def parallelBranches = ["linux-x86":["linux","x86","centos"],"linux-x86_64":["linux","x86_64","centos"]]
     def branches = [:]
