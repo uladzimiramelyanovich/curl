@@ -9,7 +9,7 @@ node ('master'){
             node (agentLabel){
                 def platform_version = branch.value[1]
                 def os_version = branch.value[0]
-                stage('Checkout repository ${os_version} ${platform_version}') {
+                stage('Checkout repository '+os_version+' '+platform_version+',') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
             }
