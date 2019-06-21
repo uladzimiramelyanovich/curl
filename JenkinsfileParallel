@@ -45,7 +45,7 @@ node ('master'){
                         "files": [
                             {
                                 "pattern": "*.zip",
-                                "target": "example-repo-local/${os_version/${platform_version}/"
+                                "target": "example-repo-local/${os_version}/${platform_version}/"
                             }
                         ]
                     }"""
