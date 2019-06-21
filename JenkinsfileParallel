@@ -122,7 +122,7 @@ node ('master'){
         }
         'windows2': {
             node ('client2') {
-                stage('Checkout repository Windows x64') {
+                stage('Checkout repository Windows x86') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 try {
