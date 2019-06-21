@@ -126,7 +126,7 @@ node ('master'){
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 try {
-                    stage('Build Windows x64') {
+                    stage('Build Windows x86') {
                         script {
                             parallelScript.windows("platform" : "x86")
                         }
