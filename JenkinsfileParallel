@@ -11,7 +11,7 @@ node ('master'){
                 }
                 stage('Build x32') {
                     script {
-                        parallelScript.linux("platform" : ${platform_version})
+                        parallelScript.linux("platform" : "${platform_version}")
                     }
                 }    
                 try {
@@ -62,7 +62,7 @@ node ('master'){
                 }
                 stage('Build x64') {
                     script {
-                        parallelScript.linux("platform" : ${platform_version})
+                        parallelScript.linux("platform" : "${platform_version}")
                     }
                 }    
                 try {
@@ -114,7 +114,7 @@ node ('master'){
                 try {
                     stage('Build Windows x64') {
                         script {
-                            parallelScript.windows("platform" : ${platform_version})
+                            parallelScript.windows("platform" : "${platform_version}")
                         }
                     }
                 } finally {
@@ -132,7 +132,7 @@ node ('master'){
                 try {
                     stage('Build Windows x86') {
                         script {
-                            parallelScript.windows("platform" : ${platform_version})
+                            parallelScript.windows("platform" : "${platform_version}")
                         }
                     }
                 } finally {
