@@ -15,7 +15,13 @@ node ('master'){
                 }
                 stage('Build '+os_version+' '+platform_version+'.') {
                     script {
-                        parallelScript.linux("platform" : "${platform_version}")
+                        if ( os_version == "linux" ) {
+                            parallelScript.linux("platform" : "${platform_version}")
+                        } else if ( os_version == "windows" ) {
+                            parallelScript.windows("platform" : "${platform_version}")
+                        } else {
+                            println('Unsupported os version.')
+                        }    
                     }
                 }
             }
