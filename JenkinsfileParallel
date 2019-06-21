@@ -45,7 +45,7 @@ node ('master'){
                         "files": [
                             {
                                 "pattern": "*.zip",
-                                "target": "example-repo-local/${os_version/${platform_version/"
+                                "target": "example-repo-local/${os_version/${platform_version}/"
                             }
                         ]
                     }"""
@@ -96,7 +96,7 @@ node ('master'){
                         "files": [
                             {
                                 "pattern": "*.zip",
-                                "target": "example-repo-local/${os_version/${platform_version/"
+                                "target": "example-repo-local/${os_version}/${platform_version}/"
                             }
                         ]
                     }"""
@@ -114,7 +114,7 @@ node ('master'){
                 try {
                     stage('Build Windows x64') {
                         script {
-                            parallelScript.windows("platform" : ${platform_version")
+                            parallelScript.windows("platform" : ${platform_version}")
                         }
                     }
                 } finally {
@@ -132,7 +132,7 @@ node ('master'){
                 try {
                     stage('Build Windows x86') {
                         script {
-                            parallelScript.windows("platform" : ${platform_version)
+                            parallelScript.windows("platform" : ${platform_version})
                         }
                     }
                 } finally {
