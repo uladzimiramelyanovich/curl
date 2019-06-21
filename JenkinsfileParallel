@@ -21,7 +21,7 @@ node ('master'){
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_${os_version}_${platform_version}_$build_date.zip . -x curl_${os_version}_${platform_version}_$build_date.zip'
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_'+os_version+'_'+platform_version+'_$build_date.zip . -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
                 }
                 stage('SonarQube analysis centos x86') {
                     // requires SonarQube Scanner 2.8+
@@ -72,7 +72,7 @@ node ('master'){
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_${os_version}_${platform_version}_$build_date.zip . -x curl_${os_version}_${platform_version}_$build_date.zip'
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_'+os_version+'_'+platform_version+'_$build_date.zip . -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
                 }
                 stage('SonarQube analysis linux x64') {
                     // requires SonarQube Scanner 2.8+
