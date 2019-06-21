@@ -114,7 +114,7 @@ node ('master'){
                 try {
                     stage('Build Windows x64') {
                         script {
-                            parallelScript.windows("platform" : ${platform_version}")
+                            parallelScript.windows("platform" : ${platform_version})
                         }
                     }
                 } finally {
