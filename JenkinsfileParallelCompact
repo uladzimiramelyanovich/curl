@@ -1,3 +1,4 @@
+@Library('my-shared-library') _
 node ('master'){
     def parallelBranches = ["linux-x86":["linux","x86","centos"],"linux-x86_64":["linux","x86_64","centos"]]
     def branches = [:]
@@ -9,8 +10,13 @@ node ('master'){
             node (agentLabel){
                 def platform_version = branch.value[1]
                 def os_version = branch.value[0]
-                stage('Checkout repository '+os_version+' '+platform_version+',') {
+                stage('Checkout repository '+os_version+' '+platform_version+'.') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+                }
+                stage('Build '+os_version+' '+platform_version+'.') {
+                    script {
+                        parallelScript.linux("platform" : "${platform_version}")
+                    }
                 }
             }
         }
