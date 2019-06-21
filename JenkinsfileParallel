@@ -119,7 +119,7 @@ node ('master'){
                     //archiveArtifacts artifacts: '**/curl', fingerprint: true
                 }    
             }    
-        }
+        },
         'windows2': {
             node ('client2') {
                 stage('Checkout repository Windows x86') {
