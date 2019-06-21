@@ -4,25 +4,26 @@ node ('master'){
     parallel (
         'agent-32bit': {
             node ('centos') {
-                stage('Checkout repository x32') {
+                def platform_version="x86"
+                def os_version="linux"
+                stage('Checkout repository centos x86') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 stage('Build x32') {
                     script {
-                        parallelScript.linux("platform" : "x86")
+                        parallelScript.linux("platform" : ${platform_version})
                     }
                 }    
                 try {
-                    stage('Build and execute Unit Tests x32') {
+                    stage('Build and execute Unit Tests centos x86') {
                         sh "cd ./tests"
                         sh "make test"
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
-                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_${os_version}_${platform_version}_$build_date.zip . -x curl_${os_version}_${platform_version}_$build_date.zip'
                 }
-                stage('SonarQube analysis x32') {
+                stage('SonarQube analysis centos x86') {
                     // requires SonarQube Scanner 2.8+
                     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
                     withSonarQubeEnv('sonarqube') {
@@ -30,7 +31,7 @@ node ('master'){
                     }
                     sleep(30)
                 }
-                stage('Quality Gate x32') {
+                stage('Quality Gate centos x86') {
                     timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
                         def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
                         if (qg.status != 'OK') {
@@ -38,13 +39,13 @@ node ('master'){
                         }
                     }
                 }
-                stage('Atrifactory x32') {
+                stage('Atrifactory centos x86') {
                     def server = Artifactory.server 'artifactory'
                     def uploadSpec = """{
                         "files": [
                             {
-                                "pattern": "*.txt",
-                                "target": "example-repo-local/files/"
+                                "pattern": "*.zip",
+                                "target": "example-repo-local/${os_version/${platform_version/"
                             }
                         ]
                     }"""
@@ -54,25 +55,26 @@ node ('master'){
         },
         'agent-64bit': {
             node ('centos') {
-                stage('Checkout repository x64') {
+                def platform_version="x86_64"
+                def os_version="linux"            
+                stage('Checkout repository linux x64') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 stage('Build x64') {
                     script {
-                        parallelScript.linux("platform" : "x86_64")
+                        parallelScript.linux("platform" : ${platform_version})
                     }
                 }    
                 try {
-                    stage('Build and execute Unit Tests x64') {
+                    stage('Build and execute Unit Tests linux x64') {
                         sh "cd ./tests"
                         sh "make test"
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
-                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_${os_version}_${platform_version}_$build_date.zip . -x curl_${os_version}_${platform_version}_$build_date.zip'
                 }
-                stage('SonarQube analysis x64') {
+                stage('SonarQube analysis linux x64') {
                     // requires SonarQube Scanner 2.8+
                     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
                     withSonarQubeEnv('sonarqube') {
@@ -80,7 +82,7 @@ node ('master'){
                     }
                     sleep(30)
                 }
-                stage('Quality Gate x64') {
+                stage('Quality Gate linux x64') {
                     timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
                         def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
                         if (qg.status != 'OK') {
@@ -88,13 +90,13 @@ node ('master'){
                         }
                     }
                 }
-                stage('Atrifactory x64') {
+                stage('Atrifactory linux x64') {
                     def server = Artifactory.server 'artifactory'
                     def uploadSpec = """{
                         "files": [
                             {
-                                "pattern": "*.txt",
-                                "target": "example-repo-local/files/"
+                                "pattern": "*.zip",
+                                "target": "example-repo-local/${os_version/${platform_version/"
                             }
                         ]
                     }"""
@@ -104,37 +106,37 @@ node ('master'){
         },        
         'windows1': {
             node ('client1') {
+                def platform_version="x86_64"
+                def os_version="windows"            
                 stage('Checkout repository Windows x64') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 try {
                     stage('Build Windows x64') {
                         script {
-                            parallelScript.windows("platform" : "x86_64")
+                            parallelScript.windows("platform" : ${platform_version")
                         }
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
-                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
                 }    
             }    
         },
         'windows2': {
             node ('client2') {
+                def platform_version="x86"
+                def os_version="windows"            
                 stage('Checkout repository Windows x86') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
                 try {
                     stage('Build Windows x86') {
                         script {
-                            parallelScript.windows("platform" : "x86")
+                            parallelScript.windows("platform" : ${platform_version)
                         }
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/*.lo,**/*.o,**/curl', fingerprint: true
-                    //archiveArtifacts artifacts: '**/*.o', fingerprint: true
-                    //archiveArtifacts artifacts: '**/curl', fingerprint: true
                 }    
             }    
         }
