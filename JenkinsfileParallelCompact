@@ -20,8 +20,24 @@ node ('master'){
                         } else if ( os_version == "windows" ) {
                             parallelScript.windows("platform" : "${platform_version}")
                         } else {
-                            println('Unsupported os version.')
+                            println('Unsupported Operating System version.')
+                            currentBuild.result = "FAILURE"
                         }    
+                    }
+                }
+                stage('SonarQube analysis '+os_version+' '+platform_version+'.') {
+                    // requires SonarQube Scanner 2.8+
+                    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+                    withSonarQubeEnv('sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl-${os_version}-${platform_version} -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-${os_version}-${platform_version}:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
+                    }
+                }
+                stage('Quality Gate '+os_version+' '+platform_version+'.') {
+                    timeout(time: 5, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
                     }
                 }
             }
