@@ -30,7 +30,7 @@ node ('master'){
                     def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
                     withSonarQubeEnv('sonarqube') {
 //                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl-${os_version}-${platform_version} -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-${os_version}-${platform_version}:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
-                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/curl-${os_version}-${platform_version}.properties"
+                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/sonar-curl-${os_version}-${platform_version}-project.properties"
                     }
                 }
                 stage('Quality Gate '+os_version+' '+platform_version+'.') {
