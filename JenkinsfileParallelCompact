@@ -31,19 +31,35 @@ node ('master'){
                 stage('Checkout repository '+os_version+' '+platform_version+'.') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
-                stage('Build '+os_version+' '+platform_version+'.') {
-                    script {
-                        if ( os_version == "linux" ) {
-                            parallelScript.linux("platform" : "${platform_version}")
-                        } else if ( os_version == "windows" ) {
-                            parallelScript.windows("platform" : "${platform_version}")
-                        } else {
-                            println('Unsupported Operating System version.')
-                            currentBuild.result = "FAILURE"
-                        }    
+                try {
+                    stage('Build '+os_version+' '+platform_version+'.') {
+                        script {
+                            if ( os_version == "linux" ) {
+                                parallelScript.linux("platform" : "${platform_version}")
+                            } else if ( os_version == "windows" ) {
+                                parallelScript.windows("platform" : "${platform_version}")
+                            } else {    
+                                println('Unsupported Operating System version.')
+                                currentBuild.result = "FAILURE"
+                            }    
+                        }
                     }
+                } finally {
+                    archiveArtifacts artifacts: '**/curl', fingerprint: true
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_'+os_version+'_'+platform_version+'_$build_date.zip . -i \curl -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
                 }
-                
+                stage('Atrifactory '+os_version+' '+platform_version+'.') {
+                    def server = Artifactory.server 'artifactory'
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "*.zip",
+                                "target": "example-repo-local/${os_version}/${platform_version}/"
+                            }
+                        ]
+                    }"""
+                    server.upload spec: uploadSpec, failNoOp: true
+                }
             }
         }
     }
