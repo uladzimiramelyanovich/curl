@@ -2,7 +2,22 @@
 node ('master'){
     def parallelBranches = ["linux-x86":["linux","x86","centos"],"linux-x86_64":["linux","x86_64","centos"]]
     def branches = [:]
-
+    stage('SonarQube analysis '+os_version+' '+platform_version+'.') {
+                    // requires SonarQube Scanner 2.8+
+                    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+                    withSonarQubeEnv('sonarqube') {
+//                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl-${os_version}-${platform_version} -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-${os_version}-${platform_version}:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
+                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/sonar-curl-project.properties"
+                    }
+                }
+                stage('Quality Gate '+os_version+' '+platform_version+'.') {
+                    timeout(time: 15, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
     parallelBranches.each { branch ->
         def branchName = branch.key
         def agentLabel = branch.value[2]
@@ -25,24 +40,10 @@ node ('master'){
                         }    
                     }
                 }
-                stage('SonarQube analysis '+os_version+' '+platform_version+'.') {
-                    // requires SonarQube Scanner 2.8+
-                    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
-                    withSonarQubeEnv('sonarqube') {
-//                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl-${os_version}-${platform_version} -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-${os_version}-${platform_version}:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
-                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/sonar-curl-${os_version}-${platform_version}-project.properties"
-                    }
-                }
-                stage('Quality Gate '+os_version+' '+platform_version+'.') {
-                    timeout(time: 15, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
-                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
+                
             }
         }
     }
     parallel branches
+    
 }
