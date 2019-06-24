@@ -46,7 +46,7 @@ node ('master'){
                     }
                 } finally {
                     archiveArtifacts artifacts: '**/curl', fingerprint: true
-                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_'+os_version+'_'+platform_version+'_$build_date.zip . -i \curl -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip -r curl_'+os_version+'_'+platform_version+'_$build_date.zip . -i curl -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
                 }
                 stage('Atrifactory '+os_version+' '+platform_version+'.') {
                     def server = Artifactory.server 'artifactory'
