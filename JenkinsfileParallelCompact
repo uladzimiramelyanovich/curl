@@ -37,9 +37,11 @@ node ('master'){
                     stage('Build '+os_version+' '+platform_version+'.') {
                         script {
                             if ( os_version == "linux" ) {
-                                parallelScript.linux("platform" : "${platform_version}")
+                                parallelScript.preplinux("platform" : "${platform_version}")                            
+                                parallelScript.buildlinux("platform" : "${platform_version}")
                             } else if ( os_version == "windows" ) {
-                                parallelScript.windows("platform" : "${platform_version}")
+                                parallelScript.prepwindows("platform" : "${platform_version}")
+                                parallelScript.buildwindows("platform" : "${platform_version}")                                
                             } else {    
                                 println('Unsupported Operating System version.')
                                 currentBuild.result = "FAILURE"
