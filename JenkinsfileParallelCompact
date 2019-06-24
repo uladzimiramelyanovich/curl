@@ -1,6 +1,6 @@
 @Library('my-shared-library') _
 node ('master'){
-    cleanWs()
+    deleteDir()
     stage('Checkout repository.') {
                     checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
                 }
@@ -27,7 +27,7 @@ node ('master'){
         def agentLabel = branch.value[2]
         branches[branchName] = {
             node (agentLabel){
-                cleanWs()
+                deleteDir()
                 def platform_version = branch.value[1]
                 def os_version = branch.value[0]
                 stage('Checkout repository '+os_version+' '+platform_version+'.') {
