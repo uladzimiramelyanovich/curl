@@ -61,7 +61,7 @@ node ('master'){
                         "files": [
                             {
                                 "pattern": "*.zip",
-                                "target": "example-repo-local/${os_version}/${platform_version}/"
+                                "target": "curl/${os_version}/${platform_version}/"
                             }
                         ]
                     }"""
