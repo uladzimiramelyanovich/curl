@@ -52,6 +52,9 @@ node ('master'){
                     archiveArtifacts artifacts: 'src/.libs/curl', fingerprint: true
                     sh 'build_date=$(date +%H%M-%d%m%Y);zip curl_'+os_version+'_'+platform_version+'_$build_date.zip src/.libs/curl -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
                 }
+                stage('Build and execute Tests '+os_version+' '+platform_version+'.') {
+                    parallelScript.testlinux("platform" : "${platform_version}")
+                }                
                 stage('Atrifactory '+os_version+' '+platform_version+'.') {
                     def server = Artifactory.server 'artifactory'
                     def uploadSpec = """{
