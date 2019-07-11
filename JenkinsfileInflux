@@ -1,10 +1,9 @@
 node ('master'){
     deleteDir()
+    def current_stage
     try {
         stage('Checkout repository.') {
-            println(env.STAGE_NAME)
-            env.STAGE_NAME = 'Checkout repository'
-            println(env.STAGE_NAME)
+            current_stage = env.STAGE_NAME
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
         }
     }   finally {
@@ -12,7 +11,7 @@ node ('master'){
             def myDataTags = [:]
             myData['stage_result'] = 'SUCCESS'
             myData['stage_successfull'] = 'true'
-            myDataTags['stage_name'] = env.STAGE_NAME
+            myDataTags['stage_name'] = current_stage
             influxDbPublisher (
                 target: 'Jenkins',
                 customData: myData,
@@ -21,6 +20,7 @@ node ('master'){
         }
     try {
         stage('Sonarqube analysis.') {
+            current_stage = env.STAGE_NAME
             // requires Sonarqube Scanner 2.8+
             def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
             withSonarQubeEnv('sonarqube') {
@@ -29,15 +29,15 @@ node ('master'){
         }            
 
     }   finally {
-            def myData = [:]
-            def myDataTags = [:]
-            myData['stage_result'] = 'SUCCESS'
-            myData['stage_successfull'] = 'true'
-            myDataTags['stage_name'] = env.STAGE_NAME
+            def mySonarData = [:]
+            def mySonarDataTags = [:]
+            mySonarData['stage_result'] = 'SUCCESS'
+            mySonarData['stage_successfull'] = 'true'
+            mySonarDataTags['stage_name'] = current_stage
             influxDbPublisher (
                 target: 'Jenkins',
-                customData: myData,
-                customDataTags: myDataTags
+                customData: mySonarData,
+                customDataTags: mySonarDataTags
             )
         }    
 }
