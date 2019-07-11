@@ -10,13 +10,8 @@ node ('master'){
     }   finally {
             influxDbPublisher (
                 target: 'Jenkins',
-                jenkinsEnvParameterTag: 'BuildID=' + env.BUILD_ID,
-                jenkinsEnvParameterField: 'StageName=' + env.STAGE_NAME
-            )
-            influxDbPublisher (
-                target: 'Jenkins',
-                jenkinsEnvParameterTag: 'BUILD_URL=' + env.BUILD_URL,
-                jenkinsEnvParameterField: 'JENKINS_HOME=' + env.JENKINS_HOME
+                jenkinsEnvParameterTag: 'stage_name=' + env.STAGE_NAME
+                jenkinsEnvParameterField: 'stage_result=SUCCESS', 'stage_susccesfull=true'
             )
         }
 }
