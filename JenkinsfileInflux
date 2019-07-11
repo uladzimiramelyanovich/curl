@@ -5,16 +5,15 @@ node ('master'){
                 checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
     }   finally {
-            def myDataMap = [:]
-            myDataMap['test1'] = 1
-            myDataMap['test2'] = 2
-            myDataMap['test3'] = 3
-            myDataMap['test4'] = 4
-            println(myDataMap)
+            def myDataMap1 = [:]
+            def myDataMap2 = [:]
             def myCustomDataMap = [:]
-            myCustomDataMap['series1'] = myDataMap
-            println(myCustomDataMap)
-            InfluxData.addField('series1', 'test666', '666')
-            influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customData: ['build_result' : 'success'], customDataMap: myCustomDataMap)
+            myDataMap1['myMap1Key1'] = 11 // first value of first map
+            myDataMap1['myMap1Key2'] = 12 // second value of first map
+            myDataMap2['myMap2Key1'] = 21 // first value of second map
+            myDataMap2['myMap2Key2'] = 22 // second value of second map
+            myCustomDataMap['series1'] = myDataMap1
+            myCustomDataMap['series2'] = myDataMap2
+            influxDbPublisher([target: 'Jenkins', customPrefix: 'myPrefix', customDataMap: myCustomDataMap])
         }
 }
