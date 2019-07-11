@@ -10,8 +10,11 @@ node ('master'){
             myDataMap['test2'] = 2
             myDataMap['test3'] = 3
             myDataMap['test4'] = 4
+            println(myDataMap)
             def myCustomDataMap = [:]
             myCustomDataMap['series1'] = myDataMap
+            prinln(myCustomDataMap)
+            
             influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customDataMap: myCustomDataMap)
         }
 }
