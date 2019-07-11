@@ -5,6 +5,10 @@ node ('master'){
                 checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
     }   finally {
-            influxDbPublisher(target: 'Jenkins')
+            influxDbPublisher (
+                target: 'Jenkins',
+                jenkinsEnvParameterTag: 'KEY1=' + env.BUILD_ID,
+                jenkinsEnvParameterField: 'KEY2=' + env.STAGE_NAME
+            )
         }
 }
