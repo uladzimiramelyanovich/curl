@@ -8,7 +8,8 @@ node ('master'){
             influxDbPublisher (
                 target: 'Jenkins',
                 jenkinsEnvParameterTag: 'KEY1=' + env.BUILD_ID,
-                jenkinsEnvParameterField: 'KEY2=' + env.STAGE_NAME
+                jenkinsEnvParameterTag: 'KEY2=' + env.EXECUTOR_NUMBER,
+                enkinsEnvParameterTag: 'KEY3=' + env.STAGE_NAME
             )
         }
 }
