@@ -11,7 +11,7 @@ node ('master'){
             def myData = [:]
             def myDataTags = [:]
             myData['stage_result'] = 'SUCCESS'
-            myData[stage_susccesfull'] = 'true'
+            myData['stage_successfull'] = 'true'
             myDataTags['stage_name'] = env.STAGE_NAME
             influxDbPublisher (
                 target: 'Jenkins',
