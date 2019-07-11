@@ -1,0 +1,79 @@
+@Library('my-shared-library') _
+node ('master'){
+    deleteDir()
+    stage('Checkout repository.') {
+                    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+                }
+    stage('Sonarqube analysis.') {
+                    // requires Sonarqube Scanner 2.8+
+                    def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+                    withSonarQubeEnv('sonarqube') {
+//                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=curl-${os_version}-${platform_version} -Dsonar.projectVersion=1.0 -Dsonar.projectKey=curl-${os_version}-${platform_version}:app -Dsonar.scm.provider=git -Dsonar.sources=. -Dsonar.cxx.includeDirectories=./,include/curl/"	 
+                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/sonar-curl-project.properties"
+                    }
+                }
+                stage('Sonarqube Quality Gates.') {
+                    timeout(time: 15, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+    def parallelBranches = ["linux-x86":["linux","x86","centos"],"linux-x86_64":["linux","x86_64","centos"]]
+    def branches = [:]
+    parallelBranches.each { branch ->
+        def branchName = branch.key
+        def agentLabel = branch.value[2]
+        branches[branchName] = {
+            node (agentLabel){
+                deleteDir()
+                def platform_version = branch.value[1]
+                def os_version = branch.value[0]
+                stage('Checkout repository '+os_version+' '+platform_version+'.') {
+                    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+                }
+                try {
+                    stage('Build '+os_version+' '+platform_version+'.') {
+                        script {
+                            if ( os_version == "linux" ) {
+                                parallelScript.preplinux("platform" : "${platform_version}")                            
+                                parallelScript.buildlinux("platform" : "${platform_version}")
+                            } else if ( os_version == "windows" ) {
+                                parallelScript.prepwindows("platform" : "${platform_version}")
+                                parallelScript.buildwindows("platform" : "${platform_version}")                                
+                            } else {    
+                                println('Unsupported Operating System version.')
+                                currentBuild.result = "FAILURE"
+                            }    
+                        }
+                    }
+                } finally {
+                    archiveArtifacts artifacts: 'src/.libs/curl', fingerprint: true
+                    sh 'build_date=$(date +%H%M-%d%m%Y);zip curl_'+os_version+'_'+platform_version+'_$build_date.zip src/.libs/curl -x curl_'+os_version+'_'+platform_version+'_$build_date.zip'
+                    def myDataMap = [:]
+                    myDataMap['myKey'] = 'myValue'
+                    myDataMap['myKey2'] = env.STAGE_NAME
+                    influxDbPublisher(selectedTarget: 'Jenkins',measurementName: 'testinfluxdb', customdata: myDataMap)
+                }
+                stage('Build and execute Tests '+os_version+' '+platform_version+'.') {
+                    parallelScript.testlinux("platform" : "${platform_version}")
+                }                
+                stage('Atrifactory '+os_version+' '+platform_version+'.') {
+                    def server = Artifactory.server 'artifactory'
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "*.zip",
+                                "target": "curl/${os_version}/${platform_version}/"
+                            }
+                        ]
+                    }"""
+                    server.upload spec: uploadSpec, failNoOp: true
+                }
+            }
+        }
+    }
+    parallel branches
+    
+}
