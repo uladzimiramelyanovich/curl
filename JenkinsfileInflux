@@ -15,6 +15,6 @@ node ('master'){
             myCustomDataMap['series1'] = myDataMap
             println(myCustomDataMap)
             
-            influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix',customData: myDataMap, customDataMap: myCustomDataMap)
+            influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customData: ['build_result' : 'success'], customDataMap: myCustomDataMap)
         }
 }
