@@ -13,7 +13,7 @@ node ('master'){
             println(myDataMap)
             def myCustomDataMap = [:]
             myCustomDataMap['series1'] = myDataMap
-            prinln(myCustomDataMap)
+            println(myCustomDataMap)
             
             influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customDataMap: myCustomDataMap)
         }
