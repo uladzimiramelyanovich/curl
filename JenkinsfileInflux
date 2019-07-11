@@ -9,7 +9,7 @@ node ('master'){
                 target: 'Jenkins',
                 jenkinsEnvParameterTag: 'KEY1=' + env.BUILD_ID,
                 jenkinsEnvParameterTag: 'KEY2=' + env.EXECUTOR_NUMBER,
-                enkinsEnvParameterTag: 'KEY3=' + env.STAGE_NAME
+                jenkinsEnvParameterTag: 'KEY3=' + env.STAGE_NAME
             )
         }
 }
