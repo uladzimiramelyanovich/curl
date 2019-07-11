@@ -2,9 +2,9 @@ node ('master'){
     deleteDir()
     try {
             stage('Checkout repository.') {
-                ptintln(env.STAGE_NAME)
+                println(env.STAGE_NAME)
                 env.STAGE_NAME = 'Checkout repository'
-                ptintln(env.STAGE_NAME)
+                println(env.STAGE_NAME)
                 checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
     }   finally {
