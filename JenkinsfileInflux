@@ -5,6 +5,8 @@ node ('master'){
                 checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
     }   finally {
-            influxDbPublisher(target: 'Jenkins')
+            def myDataMap = [:]
+            myDataMap['test'] = 'test'
+            influxDbPublisher(target: 'Jenkins', customDataMap: myDataMap)
         }
 }
