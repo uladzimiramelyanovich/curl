@@ -6,9 +6,12 @@ node ('master'){
             }
     }   finally {
             def myDataMap = [:]
-            myDataMap['test'] = 'test'
+            myDataMap['test1'] = 1
+            myDataMap['test2'] = 2
+            myDataMap['test3'] = 3
+            myDataMap['test4'] = 4
             def myCustomDataMap = [:]
             myCustomDataMap['series1'] = myDataMap
-            influxDbPublisher(target: 'Jenkins', customDataMap: myCustomDataMap)
+            influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customDataMap: myCustomDataMap)
         }
 }
