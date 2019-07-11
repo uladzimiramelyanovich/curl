@@ -14,7 +14,7 @@ node ('master'){
             def myCustomDataMap = [:]
             myCustomDataMap['series1'] = myDataMap
             println(myCustomDataMap)
-            commonPipelineEnvironment.setInfluxCustomDataProperty('myProperty', 2019)
+            InfluxData.addField('series1', 'test666', '666')
             influxDbPublisher(target: 'Jenkins', customPrefix: 'myPrefix', customData: ['build_result' : 'success'], customDataMap: myCustomDataMap)
         }
 }
