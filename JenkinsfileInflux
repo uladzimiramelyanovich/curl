@@ -22,8 +22,8 @@ node ('master'){
                 customData: myData,
                 customDataTags: myDataTags
                 )
-            } catch(EcxeptionName e1) {
-              println('Influxdb exception. ' + e1)
+            } catch(all) {
+              println('Influxdb exception. ' + all)
             }
         }
     try {
