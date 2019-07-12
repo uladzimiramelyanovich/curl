@@ -14,13 +14,6 @@ node ('master'){
             println ('Start')
             println (err)
             stage_error = err.toString()
-            println ('Next')
-            println (stage_error)
-            println ('Last')
-            def bef = ":"
-            def aft = " "
-            def st = stage_error.replace(bef,aft)
-            println (st)
             currentBuild.result = "FAILURE"
         }
         finally {
