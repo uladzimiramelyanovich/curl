@@ -13,7 +13,7 @@ node ('master'){
     }   catch (err) {
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
-            error(err)
+            error(err.toString())
         }
         finally {
             println(currentBuild.currentResult + ' ' + stage_name)
