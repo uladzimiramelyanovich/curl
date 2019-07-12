@@ -12,7 +12,7 @@ node ('master'){
         }
     }   catch (err) {
             println (err)
-            stage_error = err.toString()
+            stage_error = err
             println (stage_error)
             println (stage_error.replace("\:","."))
             currentBuild.result = "FAILURE"
