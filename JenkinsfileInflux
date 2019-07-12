@@ -1,5 +1,5 @@
 node ('master'){
-try {
+
     deleteDir()
     def stage_name
     def stage_id
@@ -58,7 +58,5 @@ try {
               println('Influxdb exception. ' + all)
             }                
         } 
-}   catch (all) {
-        println ('Some exception' + all)
-    }        
+       
 }
