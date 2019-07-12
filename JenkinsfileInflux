@@ -17,7 +17,7 @@ node ('master'){
             println ('Next')
             println (stage_error)
             println ('Last')
-            println (stage_error.getClass())
+            println (stage_error.replaceALL('\\:','!'))
             currentBuild.result = "FAILURE"
         }
         finally {
