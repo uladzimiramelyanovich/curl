@@ -17,7 +17,7 @@ node ('master'){
             println ('Next')
             println (stage_error)
             println ('Last')
-            println ( 'test ' + stage_error.replaceALL('cloning','zero'))
+            println ('test')
             currentBuild.result = "FAILURE"
         }
         finally {
