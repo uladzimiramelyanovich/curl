@@ -3,6 +3,7 @@ node ('master'){
     deleteDir()
     def stage_name
     def stage_id
+    def stage_error = 'no errors'
     try {
         stage('Checkout repository.') {
             stage_id = 1
@@ -11,13 +12,16 @@ node ('master'){
         }
     }   catch (err) {
             println (err)
+            stage_error = err
             currentBuild.result = "FAILURE"
         }
         finally {
             println(currentBuild.currentResult + ' ' + stage_name)
             def myData = [:]
             def myDataTags = [:]
-            myData['stage_result'] = 'SUCCESS'
+            myData['stage_result'] = currentBuild.currentResult
+            myData['stage_error'] = stage_error
+            stage_error = "no errors"
             myData['stage_successfull'] = 'true'
             myData['stage_id'] = stage_id            
             myDataTags['stage_name'] = stage_name
@@ -29,7 +33,7 @@ node ('master'){
                     customDataTags: myDataTags
                 )
             } catch(all) {
-              println('Influxdb exception. ' + all)
+                println('Influxdb exception. ' + all)
             }
         }
                 
