@@ -13,9 +13,9 @@ node ('master'){
     }   catch (err) {
             println ('Start')
             println (err)
-            stage_error = err
+            stage_error = err.toString()
             println ('Next')
-            println (stage_error.toString())
+            println (stage_error)
             println ('Last')
             println (stage_error.replaceALL("cloning","zero"))
             currentBuild.result = "FAILURE"
