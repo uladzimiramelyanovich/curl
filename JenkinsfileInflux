@@ -10,6 +10,7 @@ try {
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
         }
     }   finally {
+            pringln(currentBuild.currentResult + ' ' + env.STAGE_NAME)
             def myData = [:]
             def myDataTags = [:]
             myData['stage_result'] = 'SUCCESS'
@@ -29,6 +30,7 @@ try {
         }
     try {
         stage('Sonarqube analysis.') {
+            pringln(currentBuild.currentResult + ' ' + env.STAGE_NAME)
             stage_id = 2        
             stage_name = env.STAGE_NAME
             // requires Sonarqube Scanner 2.8+
