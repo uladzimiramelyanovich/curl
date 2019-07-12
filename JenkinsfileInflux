@@ -12,7 +12,9 @@ node ('master'){
         }
     }   catch (err) {
             println (err)
-            stage_error = err
+            stage_error = err.toString()
+            println (stage_error)
+            println (stage_error.replace("\:","."))
             currentBuild.result = "FAILURE"
         }
         finally {
@@ -21,7 +23,7 @@ node ('master'){
             def myDataTags = [:]
             myData['stage_result'] = currentBuild.currentResult
             myData['stage_error'] = stage_error
-            stage_error = "no errors"
+            stage_error = 'no errors'
             myData['stage_successfull'] = 'true'
             myData['stage_id'] = stage_id            
             myDataTags['stage_name'] = stage_name
