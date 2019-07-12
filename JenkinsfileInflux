@@ -56,7 +56,7 @@ try {
               println('Influxdb exception. ' + all)
             }                
         } 
-}   catch (NoRouteToHostException e1) {
-        println ('Some exception' + e1)
+}   catch (all) {
+        println ('Some exception' + all)
     }        
 }
