@@ -17,7 +17,7 @@ node ('master'){
             println ('Next')
             println (stage_error)
             println ('Last')
-            def st = stage_error.replaceALL('\\:','!')
+            def st = stage_error.replaceALL('r','!')
             println (st)
             currentBuild.result = "FAILURE"
         }
