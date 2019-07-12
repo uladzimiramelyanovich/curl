@@ -9,7 +9,11 @@ node ('master'){
             stage_name = env.STAGE_NAME
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich1/curl.git']]]
         }
-    }   finally {
+    }   catch (err) {
+            println (err)
+            currentBuild.result = "FAILURE"
+        }
+        finally {
             println(currentBuild.currentResult + ' ' + stage_name)
             def myData = [:]
             def myDataTags = [:]
@@ -28,6 +32,7 @@ node ('master'){
               println('Influxdb exception. ' + all)
             }
         }
+                
     try {
         stage('Sonarqube analysis.') {
             stage_id = 2        
