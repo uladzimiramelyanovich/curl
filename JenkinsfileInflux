@@ -4,15 +4,17 @@ node ('master'){
     def stage_name
     def stage_id
     def stage_error = 'no errors'
+    def stage_successfull = true
     try {
         stage('Checkout repository.') {
             stage_id = 1
             stage_name = env.STAGE_NAME
-            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich1/curl.git']]]
+            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich2/curl.git']]]
         }
     }   catch (err) {
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
+            stage_successfull = false
             error(err.toString())
         }
         finally {
@@ -22,7 +24,8 @@ node ('master'){
             myData['stage_result'] = currentBuild.currentResult
             myData['stage_error'] = stage_error
             stage_error = 'no errors'
-            myData['stage_successfull'] = 'true'
+            myData['stage_successfull'] = stage_successfull
+            stage_successfull = true            
             myData['stage_id'] = stage_id            
             myDataTags['stage_name'] = stage_name
             myDataTags['build_id'] = env.BUILD_ID
@@ -48,13 +51,22 @@ node ('master'){
             }
         }            
 
-    }   finally {
+    }   catch (err) {
+            stage_error = err.toString()
+            currentBuild.result = "FAILURE"
+            stage_successfull = false
+            error(err.toString())
+        }    
+        finally {
             println(currentBuild.currentResult + ' ' + stage_name)    
             def mySonarData = [:]
             def mySonarDataTags = [:]
-            mySonarData['stage_result'] = 'SUCCESS'
-            mySonarData['stage_successfull'] = 'true'
-            mySonarData['stage_id'] = stage_id            
+            mySonarData['stage_result'] = currentBuild.currentResult
+            mySonarData['stage_successfull'] = stage_successfull
+            stage_successfull = true
+            mySonarData['stage_id'] = stage_id
+            mySonarData['stage_error'] = stage_error
+            stage_error = 'no errors'            
             mySonarDataTags['stage_name'] = stage_name
             mySonarDataTags['build_id'] = env.BUILD_ID
             try {            
