@@ -19,7 +19,7 @@ node ('master'){
             println ('Last')
             def bef = ":"
             def aft = " "
-            def st = stage_error.replaceALL(bef,aft)
+            def st = stage_error.replace(bef,aft)
             println (st)
             currentBuild.result = "FAILURE"
         }
