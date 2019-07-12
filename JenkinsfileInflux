@@ -7,7 +7,7 @@ node ('master'){
         stage('Checkout repository.') {
             stage_id = 1
             stage_name = env.STAGE_NAME
-            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich1/curl.git']]]
         }
     }   finally {
             println(currentBuild.currentResult + ' ' + stage_name)
