@@ -1,4 +1,5 @@
 node ('master'){
+try {
     deleteDir()
     def stage_name
     def stage_id
@@ -18,9 +19,9 @@ node ('master'){
             myDataTags['build_id'] = env.BUILD_ID
             try {
                 influxDbPublisher (
-                target: 'Jenkins',
-                customData: myData,
-                customDataTags: myDataTags
+                    target: 'Jenkins',
+                    customData: myData,
+                    customDataTags: myDataTags
                 )
             } catch(all) {
               println('Influxdb exception. ' + all)
@@ -45,10 +46,17 @@ node ('master'){
             mySonarData['stage_id'] = stage_id            
             mySonarDataTags['stage_name'] = stage_name
             mySonarDataTags['build_id'] = env.BUILD_ID
-            influxDbPublisher (
-                target: 'Jenkins',
-                customData: mySonarData,
-                customDataTags: mySonarDataTags
-            )
-        }    
+            try {            
+                influxDbPublisher (
+                    target: 'Jenkins',
+                    customData: mySonarData,
+                    customDataTags: mySonarDataTags
+                )
+            } catch(all) {
+              println('Influxdb exception. ' + all)
+            }                
+        } 
+}   catch (NoRouteToHostException e1) {
+        println (e1)
+    }        
 }
