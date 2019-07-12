@@ -9,7 +9,7 @@ node ('master'){
         stage('Checkout repository.') {
             stage_id = 1
             stage_name = env.STAGE_NAME
-            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich2/curl.git']]]
+            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
         }
     }   catch (err) {
             stage_error = err.toString()
