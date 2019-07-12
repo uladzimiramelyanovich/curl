@@ -11,10 +11,9 @@ node ('master'){
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich1/curl.git']]]
         }
     }   catch (err) {
-            println ('Start')
-            println (err)
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
+            error(err)
         }
         finally {
             println(currentBuild.currentResult + ' ' + stage_name)
