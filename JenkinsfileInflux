@@ -57,6 +57,6 @@ try {
             }                
         } 
 }   catch (NoRouteToHostException e1) {
-        println (e1)
+        println ('Some exception' + e1)
     }        
 }
