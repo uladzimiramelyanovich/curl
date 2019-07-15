@@ -12,7 +12,7 @@ node ('master'){
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
         }
     }   catch (err) {
-            def logFilename = env.JENKINS_HOME + '/job/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
+            def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
             sh "grep ERROR " + logFilename
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
@@ -54,7 +54,7 @@ node ('master'){
         }            
 
     }   catch (err) {
-            def logFilename = env.JENKINS_HOME + '/job/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
+            def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
             sh "grep ERROR " + logFilename    
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
