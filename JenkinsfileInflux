@@ -55,7 +55,10 @@ node ('master'){
 
     }   catch (err) {
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
-            sh "grep ERROR " + logFilename    
+            new File(logFilename).eachLine { line ->
+                println line.grep('ERROR')
+            }
+            
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
             stage_successfull = false
