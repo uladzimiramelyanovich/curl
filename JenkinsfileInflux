@@ -13,8 +13,8 @@ node ('master'){
         }
     }   catch (err) {
             sh """logFilename=${JENKINS_HOME}/${JOB_URL//${JENKINS_URL}/}"""
-            sh "logFilename=${logFilename//job\//jobs\/}builds/${BUILD_NUMBER}/log"
-            sh "grep "ERROR" ${logFilename}"
+            sh """logFilename=${logFilename//job\//jobs\/}builds/${BUILD_NUMBER}/log"""
+            sh "grep ERROR ${logFilename}"
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
             stage_successfull = false
