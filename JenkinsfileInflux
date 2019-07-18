@@ -56,7 +56,7 @@ node ('master'){
     }   catch (err) {
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
 
-            def get = new URL("http://172.30.0.250:8080/blue/rest/organizations/jenkins/pipelines/curl/runs/${env.BUILD_NUMBER}/nodes/14/").openConnection();
+            def get = new URL("http://172.30.0.250:8080/blue/rest/organizations/jenkins/pipelines/curl/runs/${env.BUILD_NUMBER}/nodes/14/log").openConnection();
             def getRC = get.getResponseCode();
             println(getRC);
             if(getRC.equals(200)) {
