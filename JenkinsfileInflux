@@ -60,9 +60,9 @@ node ('master'){
             File file = new File(logFilename)
             def lines = file.readLines()
             def error_line = ~/.*ERROR.*/
-            lines.grep(error_line).each { line ->
+            lines.grep(error_line).each { String line ->
             
-            stage_error = stage_error + line.toString + '\n'
+            stage_error = stage_error + line + '\n'
             
             }
             
