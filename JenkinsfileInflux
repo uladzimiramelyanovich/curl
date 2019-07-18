@@ -58,10 +58,10 @@ node ('master'){
             println(logFilename)
             sh 'cat ' + logFilename + ' | grep ERROR'
             File file = new File(logFilename)
-            println(file.text)
             def lines = file.readLines()
             lines.each { String line ->
-                println line.grep('ERROR')
+                println(line)    
+                println line.grep(~/.*ERROR.*/)
             }
             
             stage_error = err.toString()
