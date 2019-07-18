@@ -55,7 +55,7 @@ node ('master'){
 
     }   catch (err) {
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
-            new File(logFilename).eachLine { line ->
+            new File(logFilename).eachLine { String line ->
                 println line.grep('ERROR')
             }
             
