@@ -59,10 +59,9 @@ node ('master'){
             sh 'cat ' + logFilename + ' | grep ERROR'
             File file = new File(logFilename)
             def lines = file.readLines()
-            lines.each { String line ->
-                println line.grep(~/.*ERROR.*/)
-            }
-            
+            def error_line = ~/.*ERROR.*/
+            println lines.grep(error_line)
+                        
             stage_error = err.toString()
             currentBuild.result = "FAILURE"
             stage_successfull = false
