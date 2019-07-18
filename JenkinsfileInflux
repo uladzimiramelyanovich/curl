@@ -58,7 +58,7 @@ node ('master'){
             println(logFilename)
             sh 'cat ' + logFilename + ' | grep ERROR'
             File file = new File(logFilename)
-            file.text
+            println(file.text)
             def lines = file.readLines()
             lines.each { String line ->
                 println line.grep('ERROR')
