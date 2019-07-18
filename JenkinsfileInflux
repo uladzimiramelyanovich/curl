@@ -60,7 +60,6 @@ node ('master'){
             File file = new File(logFilename)
             def lines = file.readLines()
             lines.each { String line ->
-                println(line)    
                 println line.grep(~/.*ERROR.*/)
             }
             
