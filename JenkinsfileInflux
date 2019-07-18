@@ -59,7 +59,7 @@ node ('master'){
             sh 'cat ' + logFilename + ' | grep ERROR'
             File file = new File(logFilename)
             def lines = file.readLines()
-            def error_line = ~/.*ERROR.*/
+            def error_line = ~/ERROR.*/
             stage_error = lines.grep(error_line)
                         
             //stage_error = err.toString()
