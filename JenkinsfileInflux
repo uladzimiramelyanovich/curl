@@ -60,9 +60,9 @@ node ('master'){
             File file = new File(logFilename)
             def lines = file.readLines()
             def error_line = ~/.*ERROR.*/
-            println lines.grep(error_line)
+            stage_error = lines.grep(error_line)
                         
-            stage_error = err.toString()
+            //stage_error = err.toString()
             currentBuild.result = "FAILURE"
             stage_successfull = false
             error(err.toString())
