@@ -75,7 +75,7 @@ node ('master'){
             mySonarData['stage_successfull'] = stage_successfull
             stage_successfull = true
             mySonarData['stage_id'] = stage_id
-            mySonarData['stage_error'] = stage_error
+            mySonarData['stage_error'] = stage_error.toString()
             stage_error = 'no errors'            
             mySonarDataTags['stage_name'] = stage_name
             mySonarDataTags['build_id'] = env.BUILD_ID
