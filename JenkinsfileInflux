@@ -56,10 +56,12 @@ node ('master'){
     }   catch (err) {
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
 
-            def client = new RESTClient( 'http://172.30.0.250/' )
-            def resp = client.get( path : 'blue/rest/organizations/jenkins/pipelines/curl/runs/${env.BUILD_NUMBER}/nodes/14/log/' ) // ACME boomerang
-            assert resp.status == 200  // HTTP response code; 404 means not found, etc.
-            println resp.getData()
+            def get = new URL("http://172.30.0.250:8080/blue/rest/organizations/jenkins/pipelines/curl/runs/${env.BUILD_NUMBER}/nodes/14/").openConnection();
+            def getRC = get.getResponseCode();
+            println(getRC);
+            if(getRC.equals(200)) {
+            println(get.getInputStream().getText());
+            }
             
             File file = new File(logFilename)
             def lines = file.readLines()
