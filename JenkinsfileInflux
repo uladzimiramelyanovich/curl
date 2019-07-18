@@ -57,7 +57,7 @@ node ('master'){
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
             println(logFilename)
             sh 'cat ' + logFilename + ' | grep ERROR'
-            def file = new File(logFilename)
+            File file = new File(logFilename)
             def lines = file.readLines()
             lines.each { String line ->
                 println line.grep('ERROR')
