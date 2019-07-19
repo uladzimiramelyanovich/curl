@@ -3,7 +3,7 @@ node ('master'){
     deleteDir()
     def stage_name
     def stage_id
-    def stage_error
+    def stage_error = ''
     def stage_successfull = 'true'
     def stage_build_time = 0
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
@@ -18,7 +18,7 @@ node ('master'){
             
             //sh "grep ERROR " + logFilename
             //stage_error = err.toString()
-            //currentBuild.result = "FAILURE"
+            currentBuild.result = "FAILURE"
             stage_successfull = 'false'
             
             File file = new File(logFilename)
@@ -31,7 +31,7 @@ node ('master'){
         }
         finally {
             stage_build_time = System.currentTimeMillis() - stage_build_time - prev_stage_start_time_milliseconds
-            println(currentBuild.currentResult + ' ' + stage_name)
+
             def myData = [:]
             def myDataTags = [:]
             myData['stage_result'] = currentBuild.currentResult
@@ -89,7 +89,7 @@ node ('master'){
         }    
         finally {
             stage_build_time = System.currentTimeMillis() - stage_build_time - prev_stage_start_time_milliseconds        
-            println(currentBuild.currentResult + ' ' + stage_name)    
+   
             def mySonarData = [:]
             def mySonarDataTags = [:]
             mySonarData['stage_result'] = currentBuild.currentResult
