@@ -4,7 +4,7 @@ node ('master'){
     def stage_name
     def stage_id
     def stage_error
-    def stage_successfull = true
+    def stage_successfull = 'true'
     def stage_build_time = 0
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
     try {
@@ -19,7 +19,7 @@ node ('master'){
             //sh "grep ERROR " + logFilename
             //stage_error = err.toString()
             //currentBuild.result = "FAILURE"
-            //stage_successfull = false
+            stage_successfull = 'false'
             
             File file = new File(logFilename)
             def lines = file.readLines()
@@ -42,7 +42,7 @@ node ('master'){
             myDataTags['stage_name'] = stage_name
             myDataTags['build_id'] = env.BUILD_ID
             myDataTags['stage_successfull'] = stage_successfull            
-            stage_successfull = true                        
+            stage_successfull = 'true'                        
             try {
                 influxDbPublisher (
                     target: 'Jenkins',
@@ -84,7 +84,7 @@ node ('master'){
             
             //stage_error = err.toString()
             currentBuild.result = "FAILURE"
-            stage_successfull = false
+            stage_successfull = 'false'
             error(err.toString())
         }    
         finally {
@@ -100,7 +100,7 @@ node ('master'){
             mySonarDataTags['stage_name'] = stage_name
             mySonarDataTags['build_id'] = env.BUILD_ID
             mySonarDataTags['stage_successfull'] = stage_successfull            
-            stage_successfull = true
+            stage_successfull = 'true'
             try {            
                 influxDbPublisher (
                     target: 'Jenkins',
