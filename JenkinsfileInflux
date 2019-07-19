@@ -3,7 +3,7 @@ node ('master'){
     deleteDir()
     def stage_name
     def stage_id
-    def stage_error = 'no errors'
+    def stage_error
     def stage_successfull = true
     def stage_build_time = 0
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
@@ -15,10 +15,18 @@ node ('master'){
         }
     }   catch (err) {
             def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
-            sh "grep ERROR " + logFilename
-            stage_error = err.toString()
-            currentBuild.result = "FAILURE"
-            stage_successfull = false
+            
+            //sh "grep ERROR " + logFilename
+            //stage_error = err.toString()
+            //currentBuild.result = "FAILURE"
+            //stage_successfull = false
+            
+            File file = new File(logFilename)
+            def lines = file.readLines()
+            def error_line = ~/.*ERROR.*/
+            lines.grep(error_line).each { String line ->
+                stage_error = stage_error + line + '\n'            
+            }            
             error(err.toString())
         }
         finally {
@@ -29,12 +37,12 @@ node ('master'){
             myData['stage_result'] = currentBuild.currentResult
             myData['stage_error'] = stage_error
             myData['stage_build_time'] = stage_build_time
-            stage_error = 'no errors'
-            myData['stage_successfull'] = stage_successfull
-            stage_successfull = true            
+            stage_error = ''
             myData['stage_id'] = stage_id            
             myDataTags['stage_name'] = stage_name
             myDataTags['build_id'] = env.BUILD_ID
+            myDataTags['stage_successfull'] = stage_successfull            
+            stage_successfull = true                        
             try {
                 influxDbPublisher (
                     target: 'Jenkins',
@@ -70,14 +78,10 @@ node ('master'){
             File file = new File(logFilename)
             def lines = file.readLines()
             def error_line = ~/.*ERROR.*/
-            stage_error=''
             lines.grep(error_line).each { String line ->
-            
-            stage_error = stage_error + line + '\n'
-            
+                stage_error = stage_error + line + '\n'
             }
             
-                        
             //stage_error = err.toString()
             currentBuild.result = "FAILURE"
             stage_successfull = false
@@ -89,14 +93,14 @@ node ('master'){
             def mySonarData = [:]
             def mySonarDataTags = [:]
             mySonarData['stage_result'] = currentBuild.currentResult
-            mySonarData['stage_successfull'] = stage_successfull
             mySonarData['stage_build_time'] = stage_build_time
-            stage_successfull = true
             mySonarData['stage_id'] = stage_id
             mySonarData['stage_error'] = stage_error
-            stage_error = 'no errors'            
+            stage_error = ''            
             mySonarDataTags['stage_name'] = stage_name
             mySonarDataTags['build_id'] = env.BUILD_ID
+            mySonarDataTags['stage_successfull'] = stage_successfull            
+            stage_successfull = true
             try {            
                 influxDbPublisher (
                     target: 'Jenkins',
