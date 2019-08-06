@@ -9,7 +9,6 @@ node ('master'){
     def stage_build_time = 0
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
     try {
-        @SomeAnnotation
         stage('Checkout repository.') {
             stage_id = 1
             stage_name = env.STAGE_NAME
