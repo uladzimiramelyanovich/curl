@@ -10,7 +10,7 @@ node ('master'){
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
 parallel (
 'run1': {
-        wrappedStage('Checkout repository.',
+        parallelScript.wrappedStage('Checkout repository.',
             {
             stage_id = 1
             stage_name = env.STAGE_NAME
