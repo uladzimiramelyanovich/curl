@@ -5,12 +5,7 @@ node ('master'){
 
 parallel (
 'run1': {
-        def stage_name
-        def stage_id
-        def stage_error = ''
-        def stage_successfull = 'true'
-        def stage_build_time = 0
-        def prev_stage_start_time_milliseconds = System.currentTimeMillis()
+
         parallelScript.wrappedStage('Checkout repository.',
             {
             stage_id = 1
