@@ -5,7 +5,7 @@ node ('master'){
 
 parallel (
 'run1': {
-        parallelScript.wrappedStage('Checkout repository.',
+        parallelScript.wrappedStage('Checkout repository. run1',
             {
             stage_id = 1
             stage_name = env.STAGE_NAME
@@ -13,7 +13,7 @@ parallel (
             }
         )
 
-        parallelScript.wrappedStage('Sonarqube analysis.',
+        parallelScript.wrappedStage('Sonarqube analysis. run1',
             {
             stage_id = 2        
             stage_name = env.STAGE_NAME
@@ -33,7 +33,7 @@ parallel (
         def stage_build_time = 0
         def prev_stage_start_time_milliseconds = System.currentTimeMillis()
         try {
-        stage('Checkout repository.') {
+        stage('Checkout repository. run2') {
             stage_id = 1
             stage_name = env.STAGE_NAME
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
@@ -80,7 +80,7 @@ parallel (
         }
                 
     try {
-        stage('Sonarqube analysis.') {
+        stage('Sonarqube analysis. run2') {
             stage_id = 2        
             stage_name = env.STAGE_NAME
             // requires Sonarqube Scanner 2.8+
