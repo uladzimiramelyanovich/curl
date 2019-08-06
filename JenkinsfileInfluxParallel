@@ -10,53 +10,13 @@ node ('master'){
     def prev_stage_start_time_milliseconds = System.currentTimeMillis()
 parallel (
 'run1': {
-        try {
-        stage('Checkout repository.') {
+        wrappedStage('Checkout repository.',
+            {
             stage_id = 1
             stage_name = env.STAGE_NAME
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
-        }
-    }   catch (err) {
-            def logFilename = env.JENKINS_HOME + '/jobs/' + env.JOB_NAME + '/builds/' + env.BUILD_NUMBER + '/log'
-            
-            //sh "grep ERROR " + logFilename
-            //stage_error = err.toString()
-            currentBuild.result = "FAILURE"
-            stage_successfull = 'false'
-            
-            File file = new File(logFilename)
-            def lines = file.readLines()
-            def error_line = ~/.*ERROR.*/
-            lines.grep(error_line).each { String line ->
-                stage_error = stage_error + line + '\n'            
-            }            
-            error(err.toString())
-        }
-        finally {
-            stage_build_time = System.currentTimeMillis() - stage_build_time - prev_stage_start_time_milliseconds
-
-            def myData = [:]
-            def myDataTags = [:]
-            myData['stage_result'] = currentBuild.currentResult
-            myData['stage_error'] = stage_error
-            myData['stage_build_time'] = stage_build_time
-            stage_error = ''
-            myData['stage_id'] = stage_id            
-            myDataTags['stage_name'] = stage_name
-            myDataTags['build_id'] = env.BUILD_ID
-            myDataTags['stage_successfull'] = stage_successfull            
-            stage_successfull = 'true'                        
-            try {
-                influxDbPublisher (
-                    target: 'Jenkins',
-                    customData: myData,
-                    customDataTags: myDataTags
-                )
-            } catch(all) {
-                println('Influxdb exception. ' + all)
             }
-        }
-                
+        )
     try {
         stage('Sonarqube analysis.') {
             stage_id = 2        
