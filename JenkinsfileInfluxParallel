@@ -8,7 +8,6 @@ parallel (
         parallelScript.wrappedStage('Checkout repository. run1',
             {
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
-            sh 'printenv'
             }
         )
 
@@ -22,5 +21,22 @@ parallel (
             }
         )            
     } //run1
+'run2': {
+        parallelScript.wrappedStage('Checkout repository. run2',
+            {
+            checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
+            }
+        )
+
+        parallelScript.wrappedStage('Sonarqube analysis. run2',
+            {
+            // requires Sonarqube Scanner 2.8+
+            def scannerHome = tool 'Sonarqube Scanner 3.3.0.1492';
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonarqube/sonar-curl-project.properties"
+                }
+            }
+        )            
+    } //run2    
 ) //parallel       
 }
