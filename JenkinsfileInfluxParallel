@@ -20,7 +20,7 @@ parallel (
                 }
             }
         )            
-    } //run1
+    }, //run1
 'run2': {
         parallelScript.wrappedStage('Checkout repository. run2',
             {
