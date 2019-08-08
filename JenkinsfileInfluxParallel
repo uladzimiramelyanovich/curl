@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper  
 @Library('my-shared-library') _
 node ('master'){
 
