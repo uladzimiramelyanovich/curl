@@ -11,7 +11,11 @@ parallel (
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
         )
-
+        parallelScript.wrappedStage('Success. run1',
+            {
+            build 'success'
+            }
+        )
         parallelScript.wrappedStage('Sonarqube analysis. run1',
             {
             // requires Sonarqube Scanner 2.8+
@@ -31,7 +35,11 @@ parallel (
             checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/heads/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/uladzimiramelyanovich/curl.git']]]
             }
         )
-
+        parallelScript.wrappedStage('Success. run1',
+            {
+            build 'fail'
+            }
+        )
         parallelScript.wrappedStage('Sonarqube analysis. run2',
             {
             // requires Sonarqube Scanner 2.8+
